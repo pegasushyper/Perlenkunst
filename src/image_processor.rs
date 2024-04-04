@@ -27,8 +27,7 @@ mod tests {
     
     #[test]
     fn contrast_group_update() {
-        let mut white: ContrastShader::ContrastGroup = ContrastShader::ContrastGroup::new();
-        white = white.with_new_instance(&Rgba::<u8>([u8::MAX; 4]));
+        let white: contrast_shader::ContrastGroup = contrast_shader::ContrastGroup::init(&Rgba::<u8>([u8::MAX; 4]));
 
         assert_eq!(white.average_rgba(), Rgba::<u8>([255; 4]));
     }
@@ -45,9 +44,9 @@ mod tests {
         assert_eq!(color_distance(&white, &grey), 60);
     }
 
-    fn existance(list: &Vec<ContrastShader::ContrastGroup>) -> Result<(), ()> {
+    fn existance(list: &Vec<contrast_shader::ContrastGroup>) -> Result<(), ()> {
         let white = Rgba::<u8>([255; 4]);
-        if let Some(_) = ContrastShader::check_for_existance(&white, &list) {
+        if let Some(_) = contrast_shader::check_for_existance(&white, &list) {
             return Ok(());
         } else {
             return Err(());
@@ -56,8 +55,7 @@ mod tests {
     #[test]
     #[ignore]
     fn exists() {
-        let mut white_list = vec![ContrastShader::ContrastGroup::new()];
-        white_list[0] = white_list[0].with_new_instance(&Rgba::<u8>([255; 4]));
+        let white_list = vec![contrast_shader::ContrastGroup::init(&Rgba::<u8>([255; 4]))];
         
         let _ = existance(&white_list).expect(format!("list containing white: {:?} ; rgba: {:?}", white_list, white_list[0].average_rgba()).as_str());
     }
@@ -65,8 +63,7 @@ mod tests {
     #[ignore]
     #[should_panic]
     fn does_not_exist() {
-        let mut black_list = vec![ContrastShader::ContrastGroup::new()];
-        black_list[0] = black_list[0].with_new_instance(&Rgba::<u8>([0; 4]));
+        let black_list = vec![contrast_shader::ContrastGroup::init(&Rgba::<u8>([0; 4]))];
         
         let _ = existance(&black_list).expect(format!("list containing black: {:?} ; rgba: {:?}", black_list, black_list[0].average_rgba()).as_str());
     }
