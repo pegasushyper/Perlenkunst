@@ -73,7 +73,7 @@ pub mod io {
     use image::io::Reader;
     use image::DynamicImage;
 
-    pub fn load_image(path: &str) -> DynamicImage {
+    pub fn load_image<P: std::convert::AsRef<std::path::Path>>(path: P) -> DynamicImage {
         // TODO proper error handling
         Reader::open(path)
             .expect("couldn't open image")
