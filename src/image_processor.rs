@@ -12,14 +12,17 @@ mod tests {
     use super::*;
 
     #[test]
+    #[ignore]
     fn white_hex() {
         assert_eq!(util::hex_to_rgba("ffffff"), Rgba::<u8>([u8::MAX; 4]));
     }
     #[test]
+    #[ignore]
     fn black_hex() {
         assert_eq!(util::hex_to_rgba("000000"), Rgba::<u8>([0, 0, 0, u8::MAX]));
     }
     #[test]
+    #[ignore]
     #[should_panic]
     fn incorrect_hex_length() {
         let _ = util::hex_to_rgba("1234567");

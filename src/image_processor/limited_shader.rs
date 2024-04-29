@@ -1,23 +1,29 @@
 use super::*;
 
-fn proxy_channel(channel: u8, color_gradients: u8) -> u8 {
-    let mut best_score: u8 = u8::MAX;
-    let mut best_saturation: u8 = 0;
-    for grade in 0..=color_gradients {
-        let saturation = unsafe {
-            f64::to_int_unchecked::<u8>(
-                (256.0f64 / f64::from(color_gradients)) * f64::from(grade)
-                )
-        };
-        let current_score = channel_distance(channel, saturation);
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-        if current_score > best_score { break; }
-
-        best_score = current_score;
-        best_saturation = saturation;
+    #[test]
+    fn black_channel() {
+        assert_eq!(proxy_channel(0, 6), 0);
     }
+    #[test]
+    fn white_channel() {
+        assert_eq!(proxy_channel(u8::MAX, 6), u8::MAX);
+    }
+}
 
-    best_saturation
+fn proxy_channel(channel: u8, color_gradients: u8) -> u8 {
+    let get_saturation = |grade| unsafe {
+        f64::to_int_unchecked::<u8>(
+            (255.0 / f64::from(color_gradients)) * f64::from(grade))
+    };
+
+    let closest_grade = (0..=color_gradients)
+        .min_by_key(|grade| channel_distance(channel, get_saturation(*grade))).unwrap();
+
+    get_saturation(closest_grade)
 }
 
 fn closest_proxy(pixel: &Rgba<u8>, color_gradients: u8) -> Rgba<u8> {
@@ -25,11 +31,9 @@ fn closest_proxy(pixel: &Rgba<u8>, color_gradients: u8) -> Rgba<u8> {
         return Rgba::<u8>([0; 4])
     }
 
-    let best_r = proxy_channel(pixel[0], color_gradients);
-    let best_g = proxy_channel(pixel[1], color_gradients);
-    let best_b = proxy_channel(pixel[2], color_gradients);
+    let best = |i| proxy_channel(pixel[i], color_gradients);
 
-    Rgba::<u8>([best_r, best_g, best_b, u8::MAX])
+    Rgba::<u8>([best(0), best(1), best(2), u8::MAX])
 }
 
 pub fn render_proxy_image(original_image: &DynamicImage, color_gradients: u8) -> DynamicImage {
