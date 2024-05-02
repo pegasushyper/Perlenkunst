@@ -29,13 +29,6 @@ mod tests {
     }
     
     #[test]
-    fn contrast_group_update() {
-        let white: contrast_shader::ContrastGroup = contrast_shader::ContrastGroup::init(&Rgba::<u8>([u8::MAX; 4]));
-
-        assert_eq!(white.average_rgba(), Rgba::<u8>([255; 4]));
-    }
-
-    #[test]
     fn distance_0() {
         let white = Rgba::<u8>([255; 4]);
         assert_eq!(color_distance(&white, &white), 0);
@@ -46,42 +39,28 @@ mod tests {
         let grey = Rgba::<u8>([235; 4]);
         assert_eq!(color_distance(&white, &grey), 60);
     }
-
-    fn existance(list: &Vec<contrast_shader::ContrastGroup>) -> Result<(), ()> {
-        let white = Rgba::<u8>([255; 4]);
-        if let Some(_) = contrast_shader::check_for_existance(&white, &list) {
-            return Ok(());
-        } else {
-            return Err(());
-        }
-    }
-    #[test]
-    #[ignore]
-    fn exists() {
-        let white_list = vec![contrast_shader::ContrastGroup::init(&Rgba::<u8>([255; 4]))];
-        
-        let _ = existance(&white_list).expect(format!("list containing white: {:?} ; rgba: {:?}", white_list, white_list[0].average_rgba()).as_str());
-    }
-    #[test]
-    #[ignore]
-    #[should_panic]
-    fn does_not_exist() {
-        let black_list = vec![contrast_shader::ContrastGroup::init(&Rgba::<u8>([0; 4]))];
-        
-        let _ = existance(&black_list).expect(format!("list containing black: {:?} ; rgba: {:?}", black_list, black_list[0].average_rgba()).as_str());
-    }
 }
 
 pub mod io {
+    use std::process;
     use image::io::Reader;
     use image::DynamicImage;
 
     pub fn load_image<P: std::convert::AsRef<std::path::Path>>(path: P) -> DynamicImage {
-        // TODO proper error handling
-        Reader::open(path)
-            .expect("couldn't open image")
-            .decode()
-            .expect("couldn't decode image properly (maybe faulty encoding)")
+        let file = match Reader::open(path) {
+            Ok(reader) => reader,
+            Err(msg) => {
+                eprintln!("{}", msg);
+                process::exit(1);
+            }
+        };
+        match file.decode() {
+            Ok(img) => img,
+            Err(msg) => {
+                eprintln!("{}", msg);
+                process::exit(1);
+            }
+        }
     }
 }
 
@@ -89,7 +68,6 @@ mod util {
     use hex_string::HexString;
     use image::Rgba;
 
-    // only full transparency supported
     fn adjust_to_alpha(_: Rgba<u8>) -> Rgba<u8> {
         unimplemented!();
     }

@@ -1,4 +1,4 @@
-use std::path::{PathBuf, Path};
+use std::path::PathBuf;
 use clap::{arg, value_parser, Command};
 
 pub enum Shader {
@@ -37,7 +37,7 @@ pub fn cli() -> Arguments {
         .subcommand(Command::new("contrast")
             .about("groups low contrast pixels")
             .arg(arg!(-m --method <NAME> "crawler/line")
-                .default_value("crawler"),
+                .default_value("line"),
             ),
         )
         .subcommand(Command::new("palette")
