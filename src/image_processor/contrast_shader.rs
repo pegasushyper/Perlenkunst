@@ -104,7 +104,7 @@ fn counts_transparent(rgba: &Rgba<u8>) -> bool {
     false
 }
 
-fn colorspace_index(rgba: &Rgba<u8>, colorspace: &Vec<Color>) -> Option<usize> {
+fn colorspace_index(rgba: &Rgba<u8>, colorspace: &Vec<Color>, contrast_threshold: u32) -> Option<usize> {
     if colorspace.len() == 0 {
         eprintln!("Empty Colorspace, probably first Color");
         return None;
@@ -119,14 +119,14 @@ fn colorspace_index(rgba: &Rgba<u8>, colorspace: &Vec<Color>) -> Option<usize> {
             }
         };
 
-        if color_distance(rgba, &average) < CONTRAST_THRESHOLD {
+        if color_distance(rgba, &average) < contrast_threshold {
             return Some(i);
         }
     }
     None
 }
 
-pub fn line_overlay(source_image: &DynamicImage) -> (Overlay, Vec<Color>) {
+pub fn line_overlay(source_image: &DynamicImage, contrast_threshold: u32) -> (Overlay, Vec<Color>) {
     let width: usize = source_image.width().try_into().unwrap();
     let height: usize = source_image.height().try_into().unwrap();
     let source = source_image.to_rgba8();
@@ -143,7 +143,7 @@ pub fn line_overlay(source_image: &DynamicImage) -> (Overlay, Vec<Color>) {
             continue
         }
 
-        match colorspace_index(rgba, &colorspace) {
+        match colorspace_index(rgba, &colorspace, contrast_threshold) {
             Some(i) => overlay[x][y] = Some(i),
             None => {
                 let mut new_color = Color::new();

@@ -17,10 +17,10 @@ fn main() {
         cli::Shader::Graded(n) => {
             img_canvas = image_processor::limited_shader::render_proxy_image(&img_resize, n);
         }
-        cli::Shader::Contrast => {
+        cli::Shader::Contrast(t) => {
             let overlay: image_processor::contrast_shader::Overlay;
             let colorspace: Vec<image_processor::contrast_shader::Color>;
-            (overlay, colorspace) = image_processor::contrast_shader::line_overlay(&img_resize);
+            (overlay, colorspace) = image_processor::contrast_shader::line_overlay(&img_resize, t);
 
             img_canvas = image_processor::contrast_shader::render(overlay, colorspace);
         }

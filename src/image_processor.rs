@@ -1,6 +1,5 @@
 use image::{DynamicImage, RgbaImage, Rgba};
 
-const CONTRAST_THRESHOLD: u32 = 50;
 const ALPHA_THRESHOLD: u8 = 30;
 
 pub mod contrast_shader;

@@ -3,7 +3,7 @@ use clap::{arg, value_parser, Command};
 
 pub enum Shader {
     Graded(u8),
-    Contrast,
+    Contrast(u32),
     Palette(PathBuf),
 }
 
@@ -36,6 +36,10 @@ pub fn cli() -> Arguments {
         )
         .subcommand(Command::new("contrast")
             .about("groups pixels by contrast")
+            .arg(arg!(-t --threshold <VALUE>)
+                 .value_parser(value_parser!(u32))
+                 .default_value("50"),
+            ),
         )
         .subcommand(Command::new("palette")
             .about("match pixels to colors on the palette")
@@ -70,12 +74,9 @@ pub fn cli() -> Arguments {
             }
         }
         Some(("contrast", sub_matches)) => {
-            /*
-            if let Some(m) = sub_matches.get_one::<String>("method") {
-                args.shader = Shader::Contrast(m.to_string());
+            if let Some(t) = sub_matches.get_one::<u32>("threshold") {
+                args.shader = Shader::Contrast(*t);
             }
-            */
-            args.shader = Shader::Contrast;
         }
         Some(("palette", sub_matches)) => {
             if let Some(c) = sub_matches.get_one::<PathBuf>("config") {
