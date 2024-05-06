@@ -16,7 +16,7 @@ Then build the project by running
 $ cargo build --release
 ```
 
-The binary will be located in `./target/release/`
+The binary, called `perlenkunst[.exe]`, will be located in `./target/release/`
 
 ## Shaders
 
@@ -28,13 +28,7 @@ For each pixel the closest relative on this colorspace will be selected.
 
 ### Contrast Grouping Shader
 
-#### Line mode
-
-Image will be read vertically line-by-line. Each pixel is compared to the previous one. If they're inside of the threshold they will get grouped. If not, first it's checked if there is already a group that the pixel would fit in. If there is not, then a new group gets created. At the end groups will be assigned an average color value, which is then projected onto every pixel in the group on the final image.
-
-#### Crawler mode
-
-WIP
+Image will be read vertically line-by-line. Pixels get grouped by contrast (added distance between the colors). The groups average color values will be used in the output image.
 
 ### Palette
 

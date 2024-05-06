@@ -17,13 +17,10 @@ fn main() {
         cli::Shader::Graded(n) => {
             img_canvas = image_processor::limited_shader::render_proxy_image(&img_resize, n);
         }
-        cli::Shader::Contrast(m) => {
+        cli::Shader::Contrast => {
             let overlay: image_processor::contrast_shader::Overlay;
             let colorspace: Vec<image_processor::contrast_shader::Color>;
-            match m.as_str() {
-                "line" => (overlay, colorspace) = image_processor::contrast_shader::line_overlay(&img_resize),
-                _ => panic!("method {} doesn't exist", m),
-            }
+            (overlay, colorspace) = image_processor::contrast_shader::line_overlay(&img_resize);
 
             img_canvas = image_processor::contrast_shader::render(overlay, colorspace);
         }
